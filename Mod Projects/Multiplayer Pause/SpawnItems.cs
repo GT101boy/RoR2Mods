@@ -6,7 +6,7 @@ using UnityEngine;
 namespace MultiplayerPause
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.grantimatter.multiplayerpause", "Multiplayer Pause", "0.1")]
+    [BepInPlugin("com.grantimatter.multiplayerPause", "Multiplayer Pause", "0.1")]
 
     public static class SpawnItems
     {

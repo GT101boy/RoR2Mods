@@ -8,14 +8,18 @@ using On.RoR2;
 namespace MultiplayerPause
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.grantimatter.multiplayerpause", "Multiplayer Pause", "0.1")]
+    [BepInPlugin("com.grantimatter.multiMonitor", "Multiple Monitor Support", "0.1")]
     public class MultiMonitorMain : BaseUnityPlugin
     {
         // Public Variables
+        public int maxDisplays = 4;
+        public int leftMonitorIndex = 1;
+        public int rightMonitorIndex = 3;
+        public int centerMonitorIndex = 0;
+        public float fov = 50f;
 
         // Private Variables
-        private List<MonitorDisplay> displayList = new List<MonitorDisplay>();
-
+        private List<MonitorDisplay> activatedDisplays = new List<MonitorDisplay>();
 
         // Store enum that defines where the monitor is in space
         public enum MonitorPosition
@@ -28,14 +32,11 @@ namespace MultiplayerPause
         {
             public Display display;
             public Camera assCamera;
-            public Vector2 screenSize;
+            public float renderScale;
             public int displayIndex;
             public bool useDisplay;
             public MonitorPosition monitorPosition;
         }
-
-        private Camera[] monitorCams;
-        private int numDisplays;
 
         public void Awake()
         {
@@ -55,47 +56,82 @@ namespace MultiplayerPause
 
         private void CreateCameras()
         {
-            numDisplays = Display.displays.Length;
-
-            if(numDisplays < 2)
-                return;
-
-            MonitorDisplay[] dispArr = new MonitorDisplay[numDisplays];
-            int usingMonitors = 0;
+            int numDisplays = Display.displays.Length;
 
             for (int i = 0; i < numDisplays; i++)
             {
-                dispArr[i].displayIndex = i;
-                dispArr[i].monitorPosition = MonitorPosition.center;
-                dispArr[i].useDisplay = true;
-                dispArr[i].display = Display.displays[dispArr[i].displayIndex];
-                usingMonitors++;
+                if(i == leftMonitorIndex || i == rightMonitorIndex)
+                {
+                    MonitorDisplay md = new MonitorDisplay();
+                    md.displayIndex = i;
+                    md.display = Display.displays[i];
+                    md.monitorPosition = i == rightMonitorIndex ? MonitorPosition.right : MonitorPosition.left;
+                    md.useDisplay = true;
+                    md.renderScale = 0.5f;
+                    md.assCamera = CreateCam(md);
+                    Display.displays[i].Activate();
+                    activatedDisplays.Add(md);
+                }
             }
+        }
 
-            Camera[] monCams = new Camera[usingMonitors];
-            for (int i = 0; i < monCams.Length; i++)
+        private Camera CreateCam(MonitorDisplay md)
+        {
+            Camera monCam = Instantiate(Camera.main);
+            monCam.transform.SetParent(Camera.main.transform.parent);
+            monCam.transform.position = Camera.main.transform.position;
+            monCam.transform.localRotation = OrientCamera(md.monitorPosition, monCam.fieldOfView);
+            monCam.targetDisplay = md.displayIndex;
+            return monCam;
+        }
+
+        public void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.LeftBracket))
+                fov--;
+            if (Input.GetKeyDown(KeyCode.RightBracket))
+                fov++;
+
+            Camera.main.fieldOfView = fov;
+            UpdateCameras();
+        }
+
+        private void UpdateCameras()
+        {
+            for (int i = 0; i < activatedDisplays.Count; i++)
             {
-                if (monCams[i] != null)
-                    Destroy(monCams[i].gameObject);
+                if(activatedDisplays[i].assCamera.fieldOfView != fov)
+                {
+                    activatedDisplays[i].assCamera.fieldOfView = fov;
+                    activatedDisplays[i].assCamera.transform.localRotation = OrientCamera(activatedDisplays[i].monitorPosition, activatedDisplays[i].assCamera.fieldOfView);
+                }
+            }
+        }
 
-                monCams[i] = Instantiate(Camera.main);
-                monCams[i].transform.SetParent(Camera.main.transform.parent);
-                monCams[i].transform.position = Camera.main.transform.position;
-                monCams[i].targetDisplay = dispArr[i].displayIndex;
+        public Quaternion OrientCamera(MonitorPosition mp, float fov)
+        {
+            Quaternion newCamRot;
 
-                DontDestroyOnLoad(monCams[i]);
+            switch(mp)
+            {
+                case MonitorPosition.center:
+                    newCamRot = Quaternion.identity;
+                    break;
+
+                case MonitorPosition.left:
+                    newCamRot = Quaternion.Euler(Vector3.up * (- fov - 30f));
+                    break;
+
+                case MonitorPosition.right:
+                    newCamRot = Quaternion.Euler(Vector3.up * (fov + 30f));
+                    break;
+
+                default:
+                    newCamRot = Quaternion.identity;
+                    break;
             }
 
-            displayList.AddRange(dispArr);
-
-            leftMonitorCam.transform.localEulerAngles = new Vector3(0f, -93.333f, 0f);
-            rightMonitorCam.transform.localEulerAngles = new Vector3(0f, 93.333f, 0f);
-
-            leftMonitorCam.targetDisplay = 1;
-            rightMonitorCam.targetDisplay = 3;
-
-            Display.displays[1].Activate();
-            Display.displays[3].Activate();
+            return newCamRot;
         }
     }
 }

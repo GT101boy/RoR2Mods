@@ -1,25 +1,49 @@
 ﻿using UnityEngine;
 using TMPro;
+using BepInEx;
+using System;
 
 namespace ExtraInfo
 {
-    public class TMPStuff : MonoBehaviour
+    [BepInDependency("com.bepis.r2api")]
+    [BepInPlugin("com.grantimatter.ExtraInfo", "Extra Info", "0.1")]
+    public class TMPStuff : BaseUnityPlugin
     {
-        private static string stageString { get { return ExtraInfo.CurrentStage.ToString(); } }
+        private static TextMeshProUGUI stageText;
+        private static RectTransform stageTextRectT;
+        private static int scene = 0;
+        private static float timePassed = 0;
+        private static Canvas[] cans;
+
         public static void CreateTextMeshProUGUI()
         {
-            TextMeshProUGUI stageText = FindObjectOfType<Canvas>().gameObject.AddComponent<TextMeshProUGUI>();
-            RectTransform stageTextRectT = stageText.GetComponent<RectTransform>();
+            if (stageText != null)
+                return;
+            Canvas useCanvas = GameObject.Find("CursorIndicator(Clone)").GetComponent<Canvas>();
 
-            stageTextRectT.sizeDelta = new Vector2(500f, 100f);
-            stageTextRectT.anchorMin = new Vector2(0.17f, 0.045f);
-            stageTextRectT.anchorMax = new Vector2(0.17f, 0.045f);
+            if (useCanvas == null)
+                return;
+
+            GameObject TMPObject = new GameObject("ExtraInfoGO");
+            TMPObject.transform.SetParent(useCanvas.transform);
+
+            stageTextRectT = TMPObject.AddComponent<RectTransform>();
+            stageText = TMPObject.AddComponent<TextMeshProUGUI>();
+
+            stageTextRectT.sizeDelta = new Vector2(400f, 700f);
+            stageTextRectT.anchorMin = new Vector2(0.17f, 0.5f);
+            stageTextRectT.anchorMax = new Vector2(0.17f, 0.5f);
             stageTextRectT.pivot = new Vector2(0.5f, 0.5f);
-            stageTextRectT.anchoredPosition = new Vector2(0, 0);
+            stageTextRectT.anchoredPosition = Vector2.zero;
 
-            stageText.fontSize = 32f;
-            stageText.alignment = TextAlignmentOptions.Center;
-            stageText.text = string.Concat("Stages Completed [ ", stageString, " ]");
+            stageText.fontSize = 24f;
+            stageText.alignment = TextAlignmentOptions.TopLeft;
+            UpdateText(scene);
+        }
+
+        public static void UpdateText(int stage)
+        {
+            stageText.text = string.Concat("Stages Completed [ ", stage, " ]\n Loops Completed [ ", (int)Math.Floor(stage / 4.0d), " ]\n");
         }
     }
 }

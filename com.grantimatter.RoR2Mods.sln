@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraInfo", "Mod Projects\E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiMonitorSupport", "Mod Projects\Multi Monitor Support\MultiMonitorSupport.csproj", "{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unlock Bandit", "Mod Projects\Unlock Bandit\Unlock Bandit.csproj", "{623E7950-708A-4BC0-9089-6211375A2969}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{623E7950-708A-4BC0-9089-6211375A2969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{623E7950-708A-4BC0-9089-6211375A2969}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{623E7950-708A-4BC0-9089-6211375A2969}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{623E7950-708A-4BC0-9089-6211375A2969}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

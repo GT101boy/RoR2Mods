@@ -40,7 +40,6 @@ namespace MultiplayerPause
         private void Run_onStageStart(On.RoR2.Run.orig_BeginStage orig, RoR2.Run self)
         {
             orig(self);
-            CreateCameras();
         }
 
         public void OnDisable()
@@ -73,7 +72,7 @@ namespace MultiplayerPause
 
             if(Input.GetKeyDown(KeyCode.F5))
             {
-                CreateCameras();
+
             }
 
             if(Input.GetKeyDown(KeyCode.F1))
