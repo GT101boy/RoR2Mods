@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiplayerPause", "Mod Projects\Multiplayer Pause\MultiplayerPause.csproj", "{70CF3F79-167D-40C3-A489-16E1E1D902C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraInfo", "Mod Projects\Extra Info\ExtraInfo.csproj", "{B9272287-DDCB-4512-A704-9D301561BCAA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiMonitorSupport", "Mod Projects\Multi Monitor Support\MultiMonitorSupport.csproj", "{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unlock Bandit", "Mod Projects\Unlock Bandit\Unlock Bandit.csproj", "{623E7950-708A-4BC0-9089-6211375A2969}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70CF3F79-167D-40C3-A489-16E1E1D902C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70CF3F79-167D-40C3-A489-16E1E1D902C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70CF3F79-167D-40C3-A489-16E1E1D902C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70CF3F79-167D-40C3-A489-16E1E1D902C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9272287-DDCB-4512-A704-9D301561BCAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9272287-DDCB-4512-A704-9D301561BCAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9272287-DDCB-4512-A704-9D301561BCAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9272287-DDCB-4512-A704-9D301561BCAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E15901F-EA91-4D5E-981C-A10AB4DBFD62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{623E7950-708A-4BC0-9089-6211375A2969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{623E7950-708A-4BC0-9089-6211375A2969}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{623E7950-708A-4BC0-9089-6211375A2969}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{623E7950-708A-4BC0-9089-6211375A2969}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3EF1BEF8-C0CD-4395-8F23-8863930147AB}
+	EndGlobalSection
+EndGlobal
