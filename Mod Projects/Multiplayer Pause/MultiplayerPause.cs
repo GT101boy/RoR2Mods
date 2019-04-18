@@ -11,6 +11,7 @@ namespace MultiplayerPause
     {
         public void Awake()
         {
+            
             R2API.SurvivorAPI.SurvivorCatalogReady += (s, e) =>
             {
                 var survivor = new SurvivorDef
@@ -21,7 +22,7 @@ namespace MultiplayerPause
                     primaryColor = new Color(0.8039216f, 0.482352942f, 0.843137264f),
                     unlockableName = ""
                 };
-
+                /*
                 var newsurvivor = new SurvivorDef
                 {
                     bodyPrefab = BodyCatalog.FindBodyPrefab("BanditBody"),
@@ -31,15 +32,15 @@ namespace MultiplayerPause
                     unlockableName = "",
                     
                 };
+                R2API.SurvivorAPI.SurvivorDefinitions.Insert(7, newsurvivor);*/
 
                 R2API.SurvivorAPI.SurvivorDefinitions.Insert(3, survivor);
-                R2API.SurvivorAPI.SurvivorDefinitions.Insert(7, newsurvivor);
             };
         }
 
-        private void Run_onStageStart(On.RoR2.Run.orig_BeginStage orig, RoR2.Run self)
+        private void Run_onStageStart(On.RoR2.Run.orig_BeginStage o, RoR2.Run s)
         {
-            orig(self);
+            o(s);
         }
 
         public void OnDisable()
@@ -62,12 +63,6 @@ namespace MultiplayerPause
 
                     isPaused = !isPaused;
                 }
-            }
-
-            if(Input.GetKeyDown(KeyCode.T))
-            {
-                //Run.instance.AdvanceStage(Run.instance.nextStageScene.SceneName);
-                TMPStuff.CreateTextMeshProUGUI();
             }
 
             if(Input.GetKeyDown(KeyCode.F5))

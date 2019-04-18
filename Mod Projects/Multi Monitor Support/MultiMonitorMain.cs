@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using BepInEx;
-using RoR2;
-using On.RoR2;
+using UnityEngine;
 
-namespace MultiplayerPause
+namespace MultiMonitor
 {
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.grantimatter.multiMonitor", "Multiple Monitor Support", "0.1")]
@@ -16,7 +14,8 @@ namespace MultiplayerPause
         public int leftMonitorIndex = 1;
         public int rightMonitorIndex = 3;
         public int centerMonitorIndex = 0;
-        public float fov = 50f;
+        public static float bezelCorrection = 1f;
+        //public float fov = 50f;
 
         // Private Variables
         private List<MonitorDisplay> activatedDisplays = new List<MonitorDisplay>();
@@ -31,7 +30,7 @@ namespace MultiplayerPause
         struct MonitorDisplay
         {
             public Display display;
-            public Camera assCamera;
+            public Camera assCam;
             public float renderScale;
             public int displayIndex;
             public bool useDisplay;
@@ -68,7 +67,7 @@ namespace MultiplayerPause
                     md.monitorPosition = i == rightMonitorIndex ? MonitorPosition.right : MonitorPosition.left;
                     md.useDisplay = true;
                     md.renderScale = 0.5f;
-                    md.assCamera = CreateCam(md);
+                    md.assCam = CreateCam(md);
                     Display.displays[i].Activate();
                     activatedDisplays.Add(md);
                 }
@@ -80,7 +79,7 @@ namespace MultiplayerPause
             Camera monCam = Instantiate(Camera.main);
             monCam.transform.SetParent(Camera.main.transform.parent);
             monCam.transform.position = Camera.main.transform.position;
-            monCam.transform.localRotation = OrientCamera(md.monitorPosition, monCam.fieldOfView);
+            monCam.transform.localRotation = OrientCamera(md, monCam);
             monCam.targetDisplay = md.displayIndex;
             return monCam;
         }
@@ -88,11 +87,10 @@ namespace MultiplayerPause
         public void Update()
         {
             if(Input.GetKeyDown(KeyCode.LeftBracket))
-                fov--;
+                bezelCorrection -= 0.1f;
             if (Input.GetKeyDown(KeyCode.RightBracket))
-                fov++;
+                bezelCorrection += 0.1f;
 
-            Camera.main.fieldOfView = fov;
             UpdateCameras();
         }
 
@@ -100,30 +98,34 @@ namespace MultiplayerPause
         {
             for (int i = 0; i < activatedDisplays.Count; i++)
             {
-                if(activatedDisplays[i].assCamera.fieldOfView != fov)
+                if(activatedDisplays[i].assCam.fieldOfView != Camera.main.fieldOfView)
                 {
-                    activatedDisplays[i].assCamera.fieldOfView = fov;
-                    activatedDisplays[i].assCamera.transform.localRotation = OrientCamera(activatedDisplays[i].monitorPosition, activatedDisplays[i].assCamera.fieldOfView);
+                    activatedDisplays[i].assCam.fieldOfView = Camera.main.fieldOfView;
+                    activatedDisplays[i].assCam.transform.localRotation = OrientCamera(activatedDisplays[i], activatedDisplays[i].assCam);
                 }
             }
         }
 
-        public Quaternion OrientCamera(MonitorPosition mp, float fov)
+        private static Quaternion OrientCamera(MonitorDisplay md, Camera cam)
         {
             Quaternion newCamRot;
+            var radAngle = (cam.fieldOfView * bezelCorrection) * Mathf.Deg2Rad;
+            var radHFOV = (float)(2f * Math.Atan(Mathf.Tan(radAngle / 2) * cam.aspect));
+            var hFOV = (Mathf.Rad2Deg * radHFOV);
+            //float hFOV = md.assCam.fieldOfView;
 
-            switch(mp)
+            switch(md.monitorPosition)
             {
                 case MonitorPosition.center:
                     newCamRot = Quaternion.identity;
                     break;
 
                 case MonitorPosition.left:
-                    newCamRot = Quaternion.Euler(Vector3.up * (- fov - 30f));
+                    newCamRot = Quaternion.Euler(Vector3.up * (- hFOV));
                     break;
 
                 case MonitorPosition.right:
-                    newCamRot = Quaternion.Euler(Vector3.up * (fov + 30f));
+                    newCamRot = Quaternion.Euler(Vector3.up * (hFOV));
                     break;
 
                 default:

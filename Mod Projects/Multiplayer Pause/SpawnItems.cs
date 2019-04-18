@@ -49,7 +49,7 @@ namespace MultiplayerPause
             var transform = PlayerCharacterMasterController.instances[0].master.GetBodyObject().transform;
 
             //And then finally drop it infront of the player.
-            //PickupDropletController.CreatePickupDroplet(dropList[nextItem], transform.position, transform.forward * 20f);
+            PickupDropletController.CreatePickupDroplet(dropList[nextItem], transform.position, transform.forward * 20f);
         }
     }
 }
