@@ -14,7 +14,10 @@ namespace MultiMonitor
         public int leftMonitorIndex = 1;
         public int rightMonitorIndex = 3;
         public int centerMonitorIndex = 0;
-        public static float bezelCorrection = 1f;
+
+        public float bezelCorrection = 0f;
+
+        public float lastBezelcorr = 1f;
         //public float fov = 50f;
 
         // Private Variables
@@ -50,7 +53,7 @@ namespace MultiMonitor
         private void Run_onStageStart(On.RoR2.Run.orig_BeginStage orig, RoR2.Run self)
         {
             orig(self);
-            CreateCameras();
+            Invoke("CreateCameras", 0.25f);
         }
 
         private void CreateCameras()
@@ -77,6 +80,7 @@ namespace MultiMonitor
         private Camera CreateCam(MonitorDisplay md)
         {
             Camera monCam = Instantiate(Camera.main);
+            monCam.tag = "";
             monCam.transform.SetParent(Camera.main.transform.parent);
             monCam.transform.position = Camera.main.transform.position;
             monCam.transform.localRotation = OrientCamera(md, monCam);
@@ -86,14 +90,31 @@ namespace MultiMonitor
 
         public void Update()
         {
-            if(Input.GetKeyDown(KeyCode.LeftBracket))
-                bezelCorrection -= 0.1f;
-            if (Input.GetKeyDown(KeyCode.RightBracket))
-                bezelCorrection += 0.1f;
+            if (Input.GetKey(KeyCode.LeftBracket))
+                bezelCorrection -= 0.5f * Time.deltaTime;
 
-            UpdateCameras();
+            if (Input.GetKey((KeyCode.RightBracket)))
+                bezelCorrection += 0.5f * Time.deltaTime;
+
+            if (lastBezelcorr != bezelCorrection)
+            {
+                OrientAllCameras();
+                lastBezelcorr = bezelCorrection;
+            }
+            
+            if (activatedDisplays[0].assCam.fieldOfView != Camera.main.fieldOfView)
+            {
+                UpdateCameras();
+            }
         }
 
+        public void OrientAllCameras()
+        {
+            for (int i = 0; i < activatedDisplays.Count; i++)
+            {
+                activatedDisplays[i].assCam.transform.localRotation = OrientCamera(activatedDisplays[i], activatedDisplays[i].assCam);
+            }
+        }
         private void UpdateCameras()
         {
             for (int i = 0; i < activatedDisplays.Count; i++)
@@ -106,10 +127,10 @@ namespace MultiMonitor
             }
         }
 
-        private static Quaternion OrientCamera(MonitorDisplay md, Camera cam)
+        private Quaternion OrientCamera(MonitorDisplay md, Camera cam)
         {
             Quaternion newCamRot;
-            var radAngle = (cam.fieldOfView * bezelCorrection) * Mathf.Deg2Rad;
+            var radAngle = (cam.fieldOfView + bezelCorrection) * Mathf.Deg2Rad;
             var radHFOV = (float)(2f * Math.Atan(Mathf.Tan(radAngle / 2) * cam.aspect));
             var hFOV = (Mathf.Rad2Deg * radHFOV);
             //float hFOV = md.assCam.fieldOfView;
@@ -121,11 +142,11 @@ namespace MultiMonitor
                     break;
 
                 case MonitorPosition.left:
-                    newCamRot = Quaternion.Euler(Vector3.up * (- hFOV));
+                    newCamRot = Quaternion.Euler(Vector3.up * (- hFOV - bezelCorrection));
                     break;
 
                 case MonitorPosition.right:
-                    newCamRot = Quaternion.Euler(Vector3.up * (hFOV));
+                    newCamRot = Quaternion.Euler(Vector3.up * (hFOV + bezelCorrection));
                     break;
 
                 default:
