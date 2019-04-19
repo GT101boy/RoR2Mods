@@ -78,7 +78,8 @@ namespace ExtraInfo
             newArea.textObject.fontSize = fontSize;
             
             newArea.textObject.color = fontColor;
-            
+            newArea.textObject.raycastTarget = false;
+
             newArea.textObject.text = string.Concat(strings);
             //newArea.textObject.text = "IS IT JUST NOT GETTING ANY DATA????";
             
